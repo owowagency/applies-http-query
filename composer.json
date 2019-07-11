@@ -13,5 +13,15 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^8"
+    },
+    "autoload": {
+       "psr-4": {
+            "OwowAgency\\AppliesHttpQuery\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OwowAgency\\AppliesHttpQuery\\Tests\\": "tests/"
+        }
     }
 }
