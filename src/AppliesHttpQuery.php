@@ -25,7 +25,7 @@ trait AppliesHttpQuery
         }
 
         if ($request->has('search')) {
-            $this->applySearch($query, $request->get('search'));
+            $this->applySearch($query, $request->get('search'), $request->get('searchFields'));
         }
 
         if ($request->has('order_by')) {
@@ -42,16 +42,17 @@ trait AppliesHttpQuery
     /**
      * Applies the search where clauses to the query. It wraps all these wheres
      * so they will not interfere with other where claueses.
-     * 
+     *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $search
+     * @param  string  $searchFields
      * @return void
      */
-    private function applySearch(Builder &$query, string $search): void
+    private function applySearch(Builder &$query, string $search, string $searchFields): void
     {
         $this->applyJoins($query);
 
-        $columns = $this->getColumns();
+        $columns = $this->filterColumns($this->getColumns(), $searchFields);
 
         // Add a scoped where clause that includes a search on all the
         // specified columns.
@@ -65,7 +66,7 @@ trait AppliesHttpQuery
     /**
      * Applies an order by on the specified column. It also accepts a direction
      * of sorting.
-     * 
+     *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $orderBy
      * @param  string  $sortBy
@@ -82,7 +83,7 @@ trait AppliesHttpQuery
 
     /**
      * Applies the joins necessary to add the search or order by.
-     * 
+     *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
@@ -116,7 +117,7 @@ trait AppliesHttpQuery
      * post.user.name. This example will result in users.name. There is no
      * limit in the amount of levels deep the relations can go as long as there
      * exists a method with the name of the specified relation.
-     * 
+     *
      * @param  \Illuminate\Datbase\Eloquent\Model  $model
      * @param  string  $column
      * @return string
@@ -162,8 +163,28 @@ trait AppliesHttpQuery
     }
 
     /**
+     * Filter all columns which aren't in the searchableFields get parameter.
+     *
+     * @param  array  $columns
+     * @param  string  $searchableColumns
+     * @return array
+     */
+    private function filterColumns($columns, $searchFields)
+    {
+        $searchFields = explode(',', $searchFields);
+
+        // If no searchable fields are given we can presume to search in all
+        // columns specified in the model.
+        if (count($searchFields) === 0) {
+            return $columns;
+        }
+
+        return array_intersect($columns, $searchFields);
+    }
+
+    /**
      * Gets the http queryable.
-     * 
+     *
      * @return array
      */
     private function getHttpQueryable(): array
@@ -173,7 +194,7 @@ trait AppliesHttpQuery
 
     /**
      * Gets the columns from http queryable.
-     * 
+     *
      * @return array
      */
     private function getColumns(): array
@@ -183,7 +204,7 @@ trait AppliesHttpQuery
 
     /**
      * Gets the joins from http queryable.
-     * 
+     *
      * @return array
      */
     private function getJoins(): array
