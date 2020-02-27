@@ -24,11 +24,11 @@ trait AppliesHttpQuery
             return $query;
         }
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $this->applySearch($query, $request->get('search'));
         }
 
-        if ($request->has('order_by')) {
+        if ($request->filled('order_by')) {
             $this->applyOrderBy(
                 $query,
                 $request->get('order_by'),
