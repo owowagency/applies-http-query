@@ -8,6 +8,8 @@ This package contains a trait that can be used on Eloquent models. The trait add
 composer require owowagency/applies-http-query
 ```
 
+This package supports Laravel version 5 to 7. Check the [1.x branch](https://github.com/owowagency/applies-http-query/tree/1.x).
+
 ## Usage
 
 Add the trait to the model:
