@@ -4,8 +4,10 @@ This package contains a trait that can be used on Eloquent models. The trait add
 
 ## Install
 
+To install this package for Laravel version 5, 6 or 7, run the following command:
+
 ```
-composer require owowagency/applies-http-query
+composer require owowagency/applies-http-query "^1.2"
 ```
 
 ## Usage
