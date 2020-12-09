@@ -41,7 +41,7 @@ trait AppliesHttpQuery
 
     /**
      * Applies the search where clauses to the query. It wraps all these wheres
-     * so they will not interfere with other where claueses.
+     * so they will not interfere with other where clauses.
      * 
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  string  $search
@@ -95,15 +95,15 @@ trait AppliesHttpQuery
         }
 
         // Get all the current joins so we can prevent duplicates.
-        $exisingJoins = collect($query->getQuery()->joins);
+        $existingJoins = collect($query->getQuery()->joins);
 
         foreach ($joins as $table => $join) {
             // Check if the join has already been applied.
-            $exists = $exisingJoins->contains(function ($value, $key) use ($table) {
+            $exists = $existingJoins->contains(function ($value, $key) use ($table) {
                 return $table == $value->table;
             });
 
-            // Do not inlcude the join when it has already been applied.
+            // Do not include the join when it has already been applied.
             if (! $exists) {
                 $query->join($table, ...$join);
             }
